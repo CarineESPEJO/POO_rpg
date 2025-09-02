@@ -26,7 +26,7 @@ class Character
         $this->srcImg = $srcImg;
     }
 
- 
+    // --- Getters ---
     public function getName(): string { return $this->name; }
     public function getHealth(): int { return $this->health; }
     public function getStrength(): int { return $this->strength; }
@@ -34,7 +34,7 @@ class Character
     public function getStamina(): int { return $this->stamina; }
     public function getSrcImg(): string { return $this->srcImg; }
 
-
+    // --- Validation ---
     protected function validateName(string $name): string
     {
         if (strlen($name) < self::MIN_NAME || strlen($name) > self::MAX_NAME) {
@@ -51,32 +51,12 @@ class Character
         return $value;
     }
 
-
-    public function setName(string $name): void
-    {
-        $this->name = $this->validateName($name);
-    }
-
-    public function setHealth(int $health): void
-    {
-        $this->health = $this->validateStat($health, 'health');
-    }
-
-    public function setStrength(int $strength): void
-    {
-        $this->strength = $this->validateStat($strength, 'strength');
-    }
-
-    public function setIntelligence(int $intelligence): void
-    {
-        $this->intelligence = $this->validateStat($intelligence, 'intelligence');
-    }
-
-    public function setStamina(int $stamina): void
-    {
-        $this->stamina = $this->validateStat($stamina, 'stamina');
-    }
-
+    // --- Setters ---
+    public function setName(string $name): void { $this->name = $this->validateName($name); }
+    public function setHealth(int $health): void { $this->health = $this->validateStat($health, 'health'); }
+    public function setStrength(int $strength): void { $this->strength = $this->validateStat($strength, 'strength'); }
+    public function setIntelligence(int $intelligence): void { $this->intelligence = $this->validateStat($intelligence, 'intelligence'); }
+    public function setStamina(int $stamina): void { $this->stamina = $this->validateStat($stamina, 'stamina'); }
     public function setAllStats(int $health, int $strength, int $intelligence, int $stamina): void
     {
         $this->setHealth($health);
@@ -85,39 +65,42 @@ class Character
         $this->setStamina($stamina);
     }
 
- 
-    public function attack(Character $target): void
-    {
-        if ($this->getStamina() < self::ATTACK_THRESHOLD) {
-            return;
-        }
-
-        $this->setStamina(max(self::MIN_STATS, $this->getStamina() - self::ATTACK_THRESHOLD));
-
-        $damage = round((random_int(0, 10) / 10) * $this->getStrength());
-        $defense = min($target->defend(), 100);
-        $damage = (int) ($damage * (1 - $defense / 100));
-        $damage = max(0, $damage);
-
-        $target->setHealth(max(self::MIN_STATS, $target->getHealth() - $damage));
-        $target->setIntelligence(max(self::MIN_STATS, $target->getIntelligence() - self::INTELLIGENCE_ATK_MALUS));
+    // --- Actions ---
+    public function attack(Character $target): string
+{
+    if ($this->getStamina() < self::ATTACK_THRESHOLD) {
+        return "{$this->getName()} tried to attack but doesn't have enough stamina!";
     }
+
+    $this->setStamina(max(self::MIN_STATS, $this->getStamina() - self::ATTACK_THRESHOLD));
+
+    $damage = round((random_int(0, 10) / 10) * $this->getStrength());
+    $defense = min($target->defend(), 100);
+    $damage = (int) ($damage * (1 - $defense / 100));
+    $damage = max(0, $damage);
+
+    $target->setHealth(max(self::MIN_STATS, $target->getHealth() - $damage));
+    $target->setIntelligence(max(self::MIN_STATS, $target->getIntelligence() - self::INTELLIGENCE_ATK_MALUS));
+
+    return "{$this->getName()} attacks {$target->getName()}, dealing $damage damage!";
+}
+
 
     public function defend(): int
     {
-        return $this->getStamina() > self::DEFENSE_THRESHOLD
-            ? $this->getStamina() - self::DEFENSE_THRESHOLD
-            : self::MIN_STATS;
+        return $this->getStamina() > self::DEFENSE_THRESHOLD ? $this->getStamina() - self::DEFENSE_THRESHOLD : self::MIN_STATS;
     }
 
-    public function heal(): void
+    public function heal(): string
     {
         if ($this->getIntelligence() < self::HEALING_THRESHOLD) {
-            return;
+            return "{$this->getName()} tried to heal but doesn't have enough intelligence!";
         }
 
         $healAmount = self::HEALING_BASE + (int) round($this->getIntelligence() * 0.1);
         $this->setHealth(min(self::MAX_STATS, $this->getHealth() + $healAmount));
         $this->setIntelligence(max(self::MIN_STATS, $this->getIntelligence() - self::HEALING_THRESHOLD));
+
+        return "{$this->getName()} heals for $healAmount HP!";
     }
 }
