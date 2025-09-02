@@ -3,22 +3,14 @@ require_once __DIR__ . '/../src/Character.php';
 session_start();
 
 //if (!isset($_SESSION['godzilla'])) {
-$godzilla = new Character();
-$godzilla->name = 'Godzilla';
-$godzilla->strength = 40;
-$godzilla->intelligence = 60;
-$godzilla->srcImg = "/assets/images/godzilla.webp";
+$godzilla = new Character(name:'Godzilla',strength: 40,intelligence:60, srcImg:"/assets/images/godzilla.webp");
 $_SESSION['godzilla'] = $godzilla;
 //} else {
 //    $godzilla = $_SESSION['godzilla'];
 //}
 
 //if (!isset($_SESSION['kong'])) {
-$kong = new Character();
-$kong->name = 'Kong';
-$kong->strength = 60;
-$kong->intelligence = 40;
-$kong->srcImg = "/assets/images/king_kong.webp";
+$kong = new Character(name:'Kong',strength: 60,intelligence:40, srcImg:"/assets/images/king_kong.webp");
 $_SESSION['kong'] = $kong;
 //} else {
 //    $kong = $_SESSION['kong'];
@@ -40,21 +32,21 @@ $_SESSION['kong'] = $kong;
     <h1>Godzilla vs Kong</h1>
 
     <div id="combat_stats">
-        <img src="<?php echo $godzilla->srcImg; ?>" alt="Godzilla">
+        <img src="<?php echo $godzilla->getSrcImg(); ?>" alt="Godzilla">
         <h2>Stats</h2>
         <p>Godzilla: <br>
-            Life: <span id="godzilla_life"><?php echo $godzilla->life; ?></span> |
-            Strength: <span id="godzilla_strength"><?php echo $godzilla->strength; ?></span> |
-            Intelligence: <span id="godzilla_intel"><?php echo $godzilla->intelligence; ?></span> |
-            Stamina: <span id="godzilla_stamina"><?php echo $godzilla->stamina; ?></span>
+            Life: <span id="godzilla_life"><?php echo $godzilla->getLife(); ?></span> |
+            Strength: <span id="godzilla_strength"><?php echo $godzilla->getStrength(); ?></span> |
+            Intelligence: <span id="godzilla_intel"><?php echo $godzilla->getIntelligence(); ?></span> |
+            Stamina: <span id="godzilla_stamina"><?php echo $godzilla->getStamina(); ?></span>
 
         </p>
-        <img src="<?php echo $kong->srcImg; ?>" alt="Kong">
+        <img src="<?php echo $kong->getSrcImg(); ?>" alt="Kong">
         <p>Kong: <br>
-            Life: <span id="kong_life"><?php echo $kong->life; ?></span> |
-            Strength: <span id="kong_strength"><?php echo $kong->strength; ?></span> |
-            Intelligence: <span id="kong_intel"><?php echo $kong->intelligence; ?></span> |
-            Stamina: <span id="kong_stamina"><?php echo $kong->stamina; ?></span>
+            Life: <span id="kong_life"><?php echo $kong->getLife(); ?></span> |
+            Strength: <span id="kong_strength"><?php echo $kong->getStrength(); ?></span> |
+            Intelligence: <span id="kong_intel"><?php echo $kong->getIntelligence(); ?></span> |
+            Stamina: <span id="kong_stamina"><?php echo $kong->getStamina(); ?></span>
 
         </p>
     </div>
