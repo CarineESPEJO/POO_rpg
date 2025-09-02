@@ -3,7 +3,7 @@
 class Character
 {
     private string $name;
-    private int $life = 100;
+    private int $health = 100;
     private int $strength;
     private int $intelligence;
     private int $stamina = 100;
@@ -19,7 +19,7 @@ class Character
 
   
     public function getName(): string { return $this->name; }
-    public function getLife(): int { return $this->life; }
+    public function getHealth(): int { return $this->health; }
     public function getStrength(): int { return $this->strength; }
     public function getIntelligence(): int { return $this->intelligence; }
     public function getStamina(): int { return $this->stamina; }
@@ -35,7 +35,7 @@ class Character
                 }
                 break;
 
-            case 'life':
+            case 'health':
             case 'strength':
             case 'intelligence':
             case 'stamina':
@@ -52,9 +52,9 @@ class Character
     }
 
 
-    public function setLife(int $life): void
+    public function setHealth(int $health): void
     {
-        $this->validateValue('life', $life);
+        $this->validateValue('health', $health);
     }
 
     public function setIntelligence(int $intelligence): void
@@ -63,9 +63,9 @@ class Character
     }
 
    
-    public function setAllStats(int $life, int $strength, int $intelligence, int $stamina): void
+    public function setAllStats(int $health, int $strength, int $intelligence, int $stamina): void
     {
-        foreach (compact('life', 'strength', 'intelligence', 'stamina') as $key => $value) {
+        foreach (compact('health', 'strength', 'intelligence', 'stamina') as $key => $value) {
             $this->validateValue($key, $value);
         }
     }
@@ -83,7 +83,7 @@ class Character
         $damage = (int) ($damage * (1 - $target->defend() / 100));
         $damage = max(0, $damage);
 
-        $target->setLife(max(0, $target->getLife() - $damage));
+        $target->setHealth(max(0, $target->getHealth() - $damage));
         $target->setIntelligence(max(0, $target->getIntelligence() - 3));
     }
 
@@ -95,6 +95,6 @@ class Character
     public function heal(): void
     {
         $healAmount = (int) round(10 + (1 + ($this->intelligence / 100)));
-        $this->life = min(100, $this->life + $healAmount);
+        $this->health = min(100, $this->health + $healAmount);
     }
 }

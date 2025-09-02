@@ -35,7 +35,7 @@ $_SESSION['kong'] = $kong;
         <img src="<?php echo $godzilla->getSrcImg(); ?>" alt="Godzilla">
         <h2>Stats</h2>
         <p>Godzilla: <br>
-            Life: <span id="godzilla_life"><?php echo $godzilla->getLife(); ?></span> |
+            health: <span id="godzilla_health"><?php echo $godzilla->getHealth(); ?></span> |
             Strength: <span id="godzilla_strength"><?php echo $godzilla->getStrength(); ?></span> |
             Intelligence: <span id="godzilla_intel"><?php echo $godzilla->getIntelligence(); ?></span> |
             Stamina: <span id="godzilla_stamina"><?php echo $godzilla->getStamina(); ?></span>
@@ -43,7 +43,7 @@ $_SESSION['kong'] = $kong;
         </p>
         <img src="<?php echo $kong->getSrcImg(); ?>" alt="Kong">
         <p>Kong: <br>
-            Life: <span id="kong_life"><?php echo $kong->getLife(); ?></span> |
+            health: <span id="kong_health"><?php echo $kong->getHealth(); ?></span> |
             Strength: <span id="kong_strength"><?php echo $kong->getStrength(); ?></span> |
             Intelligence: <span id="kong_intel"><?php echo $kong->getIntelligence(); ?></span> |
             Stamina: <span id="kong_stamina"><?php echo $kong->getStamina(); ?></span>

@@ -8,12 +8,12 @@ function respondWithStats(Character $godzilla, Character $kong): void {
         'godzilla' => [
             'intelligence' => $godzilla->getIntelligence(),
             'stamina' => $godzilla->getStamina(),
-            'life' => $godzilla->getLife()
+            'health' => $godzilla->getHealth()
         ],
         'kong' => [
             'intelligence' => $kong->getIntelligence(),
             'stamina' => $kong->getStamina(),
-            'life' => $kong->getLife()
+            'health' => $kong->getHealth()
         ]
     ]);
     exit;
@@ -41,13 +41,13 @@ switch ($action) {
         break;
 
     case 'heal':
-        if ($player === 'godzilla' && $godzilla->getLife() > 0) $godzilla->heal();
-        elseif ($player === 'kong' && $kong->getLife() > 0) $kong->heal();
+        if ($player === 'godzilla' && $godzilla->getHealth() > 0) $godzilla->heal();
+        elseif ($player === 'kong' && $kong->getHealth() > 0) $kong->heal();
         break;
 
     case 'reset':
-        $godzilla->setAllStats(life:100, strength:40, intelligence:60, stamina:100);
-        $kong->setAllStats(life:100, strength:60, intelligence:40, stamina:100);
+        $godzilla->setAllStats(health:100, strength:40, intelligence:60, stamina:100);
+        $kong->setAllStats(health:100, strength:60, intelligence:40, stamina:100);
         break;
 
     default:
