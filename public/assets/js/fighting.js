@@ -22,7 +22,14 @@ function updateStats(data) {
     // Disable heal if health is 100 or not player's turn
     godzillaHeal.disabled = (data.godzilla.health >= 100 || currentTurn !== "godzilla");
     kongHeal.disabled = (data.kong.health >= 100 || currentTurn !== "kong");
+
+    // Disable New Fight button if both health and stamina are maxed
+    newFight.disabled = (
+        data.godzilla.health === 100 && data.godzilla.stamina === 100 &&
+        data.kong.health === 100 && data.kong.stamina === 100
+    );
 }
+
 
 //Enable only current player's buttons
 function setTurn(turn) {
