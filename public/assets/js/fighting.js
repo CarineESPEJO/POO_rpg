@@ -1,11 +1,15 @@
-const godzillaFight = document.getElementById("godzilla_fight");
-const kongFight = document.getElementById("kong_fight");
+const godzillaAttack = document.getElementById("godzilla_attack");
+const kongAttack = document.getElementById("kong_attack");
 const godzillaHeal = document.getElementById("godzilla_heal");
 const kongHeal = document.getElementById("kong_heal");
 const newFight = document.getElementById("new_fight");
 const winnerElem = document.getElementById("winner_message");
 
 let currentTurn = "godzilla"; // Godzilla starts
+
+const MIN_STATS = 0;
+const MAX_STATS = 100;
+const HEAL_THRESHOLD = 10;  
 
 // --- Update stats on the page ---
 function updateStats(data) {
@@ -19,52 +23,53 @@ function updateStats(data) {
     document.getElementById("kong_intel").textContent = data.kong.intelligence;
     document.getElementById("kong_stamina").textContent = data.kong.stamina;
 
-    // Disable heal if health is 100 or not player's turn
-    godzillaHeal.disabled = (data.godzilla.health >= 100 || currentTurn !== "godzilla");
-    kongHeal.disabled = (data.kong.health >= 100 || currentTurn !== "kong");
-
+    // Disable heal if intelligence is below PHP threshold or health is max or not player's turn
+    
+    godzillaHeal.disabled = (data.godzilla.intelligence < HEAL_THRESHOLD || data.godzilla.health >= MAX_STATS || currentTurn !== "godzilla");
+    kongHeal.disabled = (data.kong.intelligence < HEAL_THRESHOLD || data.kong.health >= MAX_STATS || currentTurn !== "kong");
     // Disable New Fight button if both health and stamina are maxed
     newFight.disabled = (
-        data.godzilla.health === 100 && data.godzilla.stamina === 100 &&
-        data.kong.health === 100 && data.kong.stamina === 100
+        data.godzilla.health === MAX_STATS && data.godzilla.stamina === MAX_STATS &&
+        data.kong.health === MAX_STATS && data.kong.stamina === MAX_STATS
     );
 }
+
 
 
 //Enable only current player's buttons
 function setTurn(turn) {
     currentTurn = turn;
     if (turn === "godzilla") {
-        godzillaFight.disabled = false;
-        godzillaHeal.disabled = (parseInt(document.getElementById("godzilla_health").textContent) >= 100);
-        kongFight.disabled = true;
+        godzillaAttack.disabled =  (parseInt(document.getElementById("godzilla_stamina").textContent) < 15);
+        godzillaHeal.disabled = (parseInt(document.getElementById("godzilla_health").textContent) >= MAX_STATS || parseInt(document.getElementById("godzilla_intel").textContent) < HEAL_THRESHOLD);
+        kongAttack.disabled = true;
         kongHeal.disabled = true;
     } else {
-        godzillaFight.disabled = true;
+        godzillaAttack.disabled = true;
         godzillaHeal.disabled = true;
-        kongFight.disabled = false;
-        kongHeal.disabled = (parseInt(document.getElementById("kong_health").textContent) >= 100);
+        kongAttack.disabled = (parseInt(document.getElementById("kong_stamina").textContent) < 15);
+        kongHeal.disabled = (parseInt(document.getElementById("kong_health").textContent) >= MAX_STATS || parseInt(document.getElementById("kong_intel").textContent) < HEAL_THRESHOLD);
     }
 }
 
 // Disable all buttons (game over)
 function disableButtons() {
-    godzillaFight.disabled = true;
-    kongFight.disabled = true;
+    godzillaAttack.disabled = true;
+    kongAttack.disabled = true;
     godzillaHeal.disabled = true;
     kongHeal.disabled = true;
 }
 
 //Check for winner
 function checkWinner(data) {
-    if ((data.godzilla.health <= 0 && data.kong.health <= 0) || 
+    if ((data.godzilla.health <= MIN_STATS && data.kong.health <= MIN_STATS) || 
         (data.godzilla.stamina < 15 && data.kong.stamina < 15 && data.godzilla.health > 0 && data.kong.health > 0)) {
         winnerElem.textContent = "It's a draw!";
         disableButtons();
-    } else if (data.godzilla.health <= 0) {
+    } else if (data.godzilla.health <= 0 || (data.godzilla.intelligence < HEAL_THRESHOLD && data.godzilla.stamina < 15)) {
         winnerElem.textContent = "Kong wins!";
         disableButtons();
-    } else if (data.kong.health <= 0) {
+    } else if (data.kong.health <= 0 || (data.kong.intelligence < HEAL_THRESHOLD && data.kong.stamina < 15)) {
         winnerElem.textContent = "Godzilla wins!";
         disableButtons();
     } else {
@@ -91,8 +96,8 @@ function action(type, player = null) {
 }
 
 
-godzillaFight.addEventListener("click", () => action('fight', 'godzilla'));
-kongFight.addEventListener("click", () => action('fight', 'kong'));
+godzillaAttack.addEventListener("click", () => action('attack', 'godzilla'));
+kongAttack.addEventListener("click", () => action('attack', 'kong'));
 godzillaHeal.addEventListener("click", () => action('heal', 'godzilla'));
 kongHeal.addEventListener("click", () => action('heal', 'kong'));
 newFight.addEventListener("click", () => action('reset'));

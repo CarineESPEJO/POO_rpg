@@ -52,16 +52,15 @@ $_SESSION['kong'] = $kong;
     </div>
 
     <div class="controls">
-        <button id="godzilla_fight">Godzilla Attack</button>
+        <button id="godzilla_attack">Godzilla Attack</button>
         <button id="godzilla_heal">Godzilla Heal</button>
         <br> <br>
-        <button id="kong_fight">Kong Attack</button>
+        <button id="kong_attack">Kong Attack</button>
         <button id="kong_heal">Kong Heal</button>
-        <br> <br> <br> <br>
     </div>
     <p id="winner_message"></p>
-
-<button id="new_fight">New Fight</button>
+<br>
+<button id="new_fight" disabled>New Fight</button>
 
 </body>
 

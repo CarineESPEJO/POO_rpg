@@ -6,10 +6,11 @@ class Character
     private const MAX_NAME = 20;
     private const MIN_STATS = 0;
     private const MAX_STATS = 100;
-    private const STAMINA_PRICE = 15;
+    private const ATTACK_THRESHOLD = 15;
     private const DEFENSE_THRESHOLD = 20;
     private const INTELLIGENCE_ATK_MALUS = 3;
-    private const HEALING_BASE = 10;
+    private const HEALING_THRESHOLD = 10;
+ private const HEALING_BASE = 10;
 
     private string $name;
     private int $health = 100;
@@ -84,13 +85,13 @@ class Character
     }
 
 
-    public function fight(Character $target): void
+    public function attack(Character $target): void
     {
-        if ($this->stamina < self::STAMINA_PRICE) { 
+        if ($this->stamina < self::ATTACK_THRESHOLD) { 
             return;
         }
 
-        $this->stamina = max(self::MIN_STATS, $this->stamina - self::STAMINA_PRICE);
+        $this->stamina = max(self::MIN_STATS, $this->stamina - self::ATTACK_THRESHOLD);
 
         $damage = round((random_int(0, 10) / 10) * $this->strength);
         $defense = min($target->defend(), 100); 
@@ -107,8 +108,13 @@ class Character
     }
 
     public function heal(): void
-    {
-        $healAmount = self::HEALING_BASE + (int) round($this->intelligence * 0.1); 
-        $this->health = min(self::MAX_STATS, $this->health + $healAmount);
+{
+    if ($this->intelligence < self::HEALING_THRESHOLD) {
+        return;
     }
+
+    $healAmount = self::HEALING_BASE + (int) round($this->intelligence * 0.1);
+    $this->health = min(self::MAX_STATS, $this->health + $healAmount);
+    $this->intelligence = max(self::MIN_STATS, $this->intelligence - self::HEALING_THRESHOLD);
 }
+};

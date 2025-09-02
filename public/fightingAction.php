@@ -35,9 +35,9 @@ $player = $_POST['player'] ?? 'godzilla';
 
 
 switch ($action) {
-    case 'fight':
-        if ($player === 'godzilla') $godzilla->fight($kong);
-        else $kong->fight($godzilla);
+    case 'attack':
+        if ($player === 'godzilla') $godzilla->attack($kong);
+        else $kong->attack($godzilla);
         break;
 
     case 'heal':
