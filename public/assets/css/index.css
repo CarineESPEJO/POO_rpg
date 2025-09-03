@@ -1,10 +1,10 @@
-*{
-    margin:0;
+* {
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,30 +12,33 @@ body{
     padding: 2.5rem;
 }
 
-img{
+img {
     width: 100px;
     height: 150px;
 }
 
-.combat_stats{
+.fight-zone {
     display: flex;
     gap: 5rem;
 }
 
-.character-block{
+.character-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 25rem;
     padding: 0.5rem;
     background-color: lightgrey;
 }
 
-.combat_msgs{
+.combat_msgs {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 4rem ;
+    height: 4rem;
 }
 
-.history_container{
+.history_container {
     background-color: lightgrey;
     display: flex;
     flex-direction: column;
@@ -45,7 +48,7 @@ img{
     padding: 1rem;
 }
 
-.history{
+.history {
     overflow: scroll;
     height: 20rem;
     width: 100%;
@@ -56,7 +59,19 @@ img{
 #action_message,
 #history,
 #history p,
-#action_history li { 
-  white-space: pre-line; 
+#action_history li {
+    white-space: pre-line;
 }
 
+
+#action_message,
+#history {
+    white-space: pre-line;
+}
+
+.controls button {
+    margin-right: 8px;
+    margin-bottom: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}

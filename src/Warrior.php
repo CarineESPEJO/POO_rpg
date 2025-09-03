@@ -1,7 +1,8 @@
 <?php
 require_once __DIR__ . "/Character.php";
+require_once __DIR__ . "/SpecialAbilityInterface.php";
 
-class Warrior extends Character
+class Warrior extends Character implements SpecialAbilityInterface
 {
     protected const POWERSTRIKE_THRESHOLD = 30;
     private int $armor;
@@ -10,6 +11,18 @@ class Warrior extends Character
     {
         parent::__construct($name, $strength, $intelligence, $srcImg);
         $this->setArmor($armor);
+    }
+
+    public function inspect(): string {
+        return "I'm {$this->name}, a Warrior. My indirect actions are : \n a better attack and a reinforced defense to reduce the attacks of my opponent.";}
+
+ public function useAbility(Character $target): string {
+    return $this->powerStrike($target); 
+}
+
+
+    public function getAbilityName(): string {
+        return 'Power Strike';
     }
 
     public function getArmor(): int { return $this->armor; }

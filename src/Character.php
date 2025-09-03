@@ -1,5 +1,5 @@
 <?php
-class Character
+abstract class Character
 {
     protected const MIN_NAME = 3;
     protected const MAX_NAME = 20;
@@ -18,11 +18,20 @@ class Character
     protected int $stamina = 100;
     protected string $srcImg;
 
+    // store original stats for reset
+    protected int $originalStrength;
+    protected int $originalIntelligence;
+
     public function __construct(string $name, int $strength, int $intelligence, string $srcImg)
     {
         $this->setName($name);
         $this->setStrength($strength);
         $this->setIntelligence($intelligence);
+
+        // store original stats
+        $this->originalStrength = $this->strength;
+        $this->originalIntelligence = $this->intelligence;
+
         $this->srcImg = $srcImg;
     }
 
@@ -33,6 +42,8 @@ class Character
     public function getIntelligence(): int { return $this->intelligence; }
     public function getStamina(): int { return $this->stamina; }
     public function getSrcImg(): string { return $this->srcImg; }
+
+    abstract public function inspect(): string;
 
     // --- Validation ---
     protected function validateName(string $name): string
@@ -65,26 +76,33 @@ class Character
         $this->setStamina($stamina);
     }
 
-    // --- Actions ---
-    public function attack(Character $target): string
-{
-    if ($this->getStamina() < self::ATTACK_THRESHOLD) {
-        return "{$this->getName()} tried to attack but doesn't have enough stamina!";
+    // --- Reset method ---
+    public function resetStats(): void {
+        $this->health = 100;
+        $this->stamina = 100;
+        $this->strength = $this->originalStrength;
+        $this->intelligence = $this->originalIntelligence;
     }
 
-    $this->setStamina(max(self::MIN_STATS, $this->getStamina() - self::ATTACK_THRESHOLD));
+    // --- Actions ---
+    public function attack(Character $target): string
+    {
+        if ($this->getStamina() < self::ATTACK_THRESHOLD) {
+            return "{$this->getName()} tried to attack but doesn't have enough stamina!";
+        }
 
-    $damage = round((random_int(0, 10) / 10) * $this->getStrength());
-    $defense = min($target->defend(), 100);
-    $damage = (int) ($damage * (1 - $defense / 100));
-    $damage = max(0, $damage);
+        $this->setStamina(max(self::MIN_STATS, $this->getStamina() - self::ATTACK_THRESHOLD));
 
-    $target->setHealth(max(self::MIN_STATS, $target->getHealth() - $damage));
-    $target->setIntelligence(max(self::MIN_STATS, $target->getIntelligence() - self::INTELLIGENCE_ATK_MALUS));
+        $damage = round((random_int(0, 10) / 10) * $this->getStrength());
+        $defense = min($target->defend(), 100);
+        $damage = (int) ($damage * (1 - $defense / 100));
+        $damage = max(0, $damage);
 
-    return "{$this->getName()} attacks {$target->getName()}, dealing $damage damage!";
-}
+        $target->setHealth(max(self::MIN_STATS, $target->getHealth() - $damage));
+        $target->setIntelligence(max(self::MIN_STATS, $target->getIntelligence() - self::INTELLIGENCE_ATK_MALUS));
 
+        return "{$this->getName()} attacks {$target->getName()}, dealing $damage damage!";
+    }
 
     public function defend(): int
     {

@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . "/Character.php";
+require_once __DIR__ . "/SpecialAbilityInterface.php";
 
-class Assassin extends Character
+
+class Assassin extends Character implements SpecialAbilityInterface
 {
     protected const AGILITY_THRESHOLD = 10;
     protected const SNEAK_ATK_THRESHOLD = 40;
@@ -12,6 +14,20 @@ class Assassin extends Character
         parent::__construct($name, $strength, $intelligence, $srcImg);
         $this->setAgility($agility);
     }
+
+    public function inspect(): string {
+        return "I'm {$this->name}, an Assassin. My indirect actions are : \na dodge reducing the attack blow and a possible doubling of the normal attack.";
+    }
+
+    public function useAbility(Character $target): string {
+    return $this->sneakAttack($target); 
+}
+
+
+    public function getAbilityName(): string {
+        return 'Sneak Attack';
+    }
+
 
     public function getAgility(): int { return $this->agility; }
     public function setAgility(int $agility): void { $this->agility = $this->validateStat($agility, 'agility'); }

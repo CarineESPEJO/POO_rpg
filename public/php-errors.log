@@ -1,0 +1,7 @@
+[03-Sep-2025 11:29:14 UTC] PHP Warning:  require_once(C:\Users\Administrateur\Documents\Carl\Cours\S8_PHP\POO\rpg\public/Arena.php): Failed to open stream: No such file or directory in C:\Users\Administrateur\Documents\Carl\Cours\S8_PHP\POO\rpg\public\fightingAction.php on line 12
+[03-Sep-2025 11:29:14 UTC] PHP Stack trace:
+[03-Sep-2025 11:29:14 UTC] PHP   1. {main}() C:\Users\Administrateur\Documents\Carl\Cours\S8_PHP\POO\rpg\public\fightingAction.php:0
+[03-Sep-2025 11:29:14 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\Users\Administrateur\Documents\Carl\Cours\S8_PHP\POO\rpg\public/Arena.php' (include_path='.;C:\php\pear') in C:\Users\Administrateur\Documents\Carl\Cours\S8_PHP\POO\rpg\public\fightingAction.php:12
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Administrateur\Documents\Carl\Cours\S8_PHP\POO\rpg\public\fightingAction.php on line 12

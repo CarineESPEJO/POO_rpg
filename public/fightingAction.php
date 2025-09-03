@@ -1,122 +1,89 @@
 <?php
-require_once __DIR__ . "/../src/Character.php";
-require_once __DIR__ . "/../src/Warrior.php";
-require_once __DIR__ . "/../src/Assassin.php";
+
+require_once __DIR__ . '/../src/Character.php';
+require_once __DIR__ . '/../src/Warrior.php';
+require_once __DIR__ . '/../src/Assassin.php';
+require_once __DIR__ . '/../src/SpecialAbilityInterface.php';
+require_once __DIR__ . '/../src/Arena.php';
 
 session_start();
 
 header('Content-Type: application/json');
 
-// ensure characters exist in session
+$action = $_POST['action'] ?? null;
+$player = $_POST['player'] ?? null;
+
 if (!isset($_SESSION['char1']) || !isset($_SESSION['char2'])) {
-    // graceful initialization fallback (so direct calls don't 500)
-    $_SESSION['char1'] = new Warrior(name: 'Godzilla', strength: 40, intelligence: 60, armor: 50, srcImg: "/assets/images/godzilla.webp");
-    $_SESSION['char2'] = new Assassin(name: 'Kong', strength: 60, intelligence: 40, agility: 50, srcImg: "/assets/images/king_kong.webp");
+    echo json_encode(['error' => 'Characters not initialized.']);
+    exit;
 }
 
 $char1 = $_SESSION['char1'];
 $char2 = $_SESSION['char2'];
+$currentTurn = $_SESSION['currentTurn'] ?? 'char1';
 
-$action = $_POST['action'] ?? '';
-$player = $_POST['player'] ?? '';
-
+$arena = new Arena();
 $message = '';
+$winner = null;
 
-if ($action === 'reset') {
-    // Reset health and stamina to full while preserving class and stats
-    $char1->setHealth(100);
-    $char1->setStamina(100);
-    $char2->setHealth(100);
-    $char2->setStamina(100);
+try {
+    switch ($action) {
+        case 'attack':
+        case 'heal':
+        case 'inspect':
+        case 'useAbility':
+            if ($player !== $currentTurn) {
+                $message = "It's not your turn!";
+            } else {
+                $attacker = $_SESSION[$currentTurn];
+                $defender = ($currentTurn === 'char1') ? $_SESSION['char2'] : $_SESSION['char1'];
+                $message = $arena->playRound($attacker, $defender, $action);
 
-    // persist
-    $_SESSION['char1'] = $char1;
-    $_SESSION['char2'] = $char2;
+                // Switch turn if not inspect
+                if ($action !== 'inspect') {
+                    $_SESSION['currentTurn'] = $currentTurn = ($currentTurn === 'char1') ? 'char2' : 'char1';
+                }
+            }
+            break;
 
-    echo json_encode([
+        case 'reset':
+            $char1->resetStats();
+            $char2->resetStats();
+            $_SESSION['currentTurn'] = $currentTurn = 'char1';
+            $message = "New fight started!";
+            break;
+
+        default:
+            throw new InvalidArgumentException("Invalid action: $action");
+    }
+
+    $winner = $arena->checkWinner($char1, $char2);
+
+    // Prepare JSON response
+    $response = [
         'char1' => [
             'name' => $char1->getName(),
-            'class' => get_class($char1),
+            'health' => $char1->getHealth(),
             'strength' => $char1->getStrength(),
             'intelligence' => $char1->getIntelligence(),
             'stamina' => $char1->getStamina(),
-            'health' => $char1->getHealth()
+            'abilityName' => $char1 instanceof SpecialAbilityInterface ? $char1->getAbilityName() : ''
         ],
         'char2' => [
             'name' => $char2->getName(),
-            'class' => get_class($char2),
+            'health' => $char2->getHealth(),
             'strength' => $char2->getStrength(),
             'intelligence' => $char2->getIntelligence(),
             'stamina' => $char2->getStamina(),
-            'health' => $char2->getHealth()
+            'abilityName' => $char2 instanceof SpecialAbilityInterface ? $char2->getAbilityName() : ''
         ],
-        'message' => "New fight started!"
-    ]);
-    exit;
+        'currentTurn' => $currentTurn,
+        'message' => $message,
+        'winner' => $winner
+    ];
+
+    echo json_encode($response);
+
+} catch (Throwable $e) {
+    echo json_encode(['error' => $e->getMessage()]);
 }
-
-// Validate player param
-if (!in_array($player, ['char1', 'char2'], true)) {
-    echo json_encode(['error' => 'Invalid player']); exit;
-}
-
-// resolve attacker / defender safely
-$attacker = ($player === 'char1') ? $char1 : $char2;
-$defender = ($player === 'char1') ? $char2 : $char1;
-
-// route action to methods
-switch ($action) {
-    case 'attack':
-        $message = $attacker->attack($defender);
-        break;
-
-    case 'heal':
-        $message = $attacker->heal();
-        break;
-
-    case 'powerstrike':
-        if ($attacker instanceof Warrior) {
-            $message = $attacker->powerStrike($defender);
-        } else {
-            $message = "{$attacker->getName()} cannot use Power Strike.";
-        }
-        break;
-
-    case 'sneakattack':
-        if ($attacker instanceof Assassin) {
-            $message = $attacker->sneakAttack($defender);
-        } else {
-            $message = "{$attacker->getName()} cannot use Sneak Attack.";
-        }
-        break;
-
-    default:
-        echo json_encode(['error' => 'Invalid action']); exit;
-}
-
-// persist objects back to session
-$_SESSION['char1'] = $char1;
-$_SESSION['char2'] = $char2;
-
-// build response arrays (plain data)
-$response = [
-    'char1' => [
-        'name' => $char1->getName(),
-        'class' => get_class($char1),
-        'strength' => $char1->getStrength(),
-        'intelligence' => $char1->getIntelligence(),
-        'stamina' => $char1->getStamina(),
-        'health' => $char1->getHealth()
-    ],
-    'char2' => [
-        'name' => $char2->getName(),
-        'class' => get_class($char2),
-        'strength' => $char2->getStrength(),
-        'intelligence' => $char2->getIntelligence(),
-        'stamina' => $char2->getStamina(),
-        'health' => $char2->getHealth()
-    ],
-    'message' => $message
-];
-
-echo json_encode($response);
