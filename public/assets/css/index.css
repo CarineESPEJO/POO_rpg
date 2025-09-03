@@ -1,3 +1,62 @@
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 2.5rem;
+}
+
 img{
     width: 100px;
+    height: 150px;
 }
+
+.combat_stats{
+    display: flex;
+    gap: 5rem;
+}
+
+.character-block{
+    width: 25rem;
+    padding: 0.5rem;
+    background-color: lightgrey;
+}
+
+.combat_msgs{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 4rem ;
+}
+
+.history_container{
+    background-color: lightgrey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.history{
+    overflow: scroll;
+    height: 20rem;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+
+#action_message,
+#history,
+#history p,
+#action_history li { 
+  white-space: pre-line; 
+}
+

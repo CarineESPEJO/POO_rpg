@@ -49,7 +49,7 @@ class Assassin extends Character
         $target->setHealth(max(self::MIN_STATS, $target->getHealth() - $damage2));
         $target->setIntelligence(max(self::MIN_STATS, $target->getIntelligence() - self::INTELLIGENCE_ATK_MALUS));
 
-        $msg .= " {$this->getName()} performs a SECOND attack, dealing $damage2 damage!";
+        $msg .= "\n{$this->getName()} performs a SECOND attack, dealing $damage2 damage!";
     }
 
     return $msg;
